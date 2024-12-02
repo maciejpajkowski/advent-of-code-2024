@@ -4,7 +4,7 @@ public class AdventClient
 {
     private static readonly HttpClient client = new();
 
-    public static async Task<string> GetData(int day)
+    public static async Task<string> GetDataForDay(int day)
     {
         try
         {

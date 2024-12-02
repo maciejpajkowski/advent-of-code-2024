@@ -3,8 +3,7 @@ public class Day1
 {
     public async static Task Solve()
     {
-
-        string responseBody = await AdventClient.GetData(1);
+        string responseBody = await AdventClient.GetDataForDay(1);
 
         string[] lines = responseBody.Split("\n");
         List<string[]> items = lines.Select((line) => line.Split("   ")).SkipLast(1).ToList();
