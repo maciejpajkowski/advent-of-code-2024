@@ -5,6 +5,8 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        await Day2.Solve();
+        // await Day1.Solve();
+        // await Day2.Solve();
+        await Day3.Solve();
     }
 }
