@@ -9,13 +9,16 @@ public class Day2
         List<string[]> reports = lines.Select((line) => line.Split(" ")).SkipLast(1).ToList();
 
         int safeScore = 0;
+        int safeScoreWithDampener = 0;
 
         foreach (var report in reports)
         {
             if (IsSafe(report)) safeScore++;
+            if (IsSafeWithProblemDampener(report)) safeScoreWithDampener++;
         }
 
-        Console.WriteLine(safeScore);
+        Console.WriteLine($"safeScore: {safeScore}");
+        Console.WriteLine($"safeScoreWithDampener: {safeScoreWithDampener}");
     }
 
     private static bool IsSafe(string[] report)
@@ -27,6 +30,29 @@ public class Day2
         if (IsLevelsDifferenceTooHigh(levels)) return false;
 
         return true;
+    }
+
+    private static bool IsSafeWithProblemDampener(string[] report)
+    {
+        var levels = report.Select((item) => Convert.ToInt32(item)).ToList();
+
+        if (!IsSafe(report))
+        {
+            bool[,] safetyRecord = new bool[3, levels.Count];
+
+            for (var i = 0; i < levels.Count; i++)
+            {
+                var dampenedLevels = levels.ToList();
+                dampenedLevels.RemoveAt(i);
+                safetyRecord[0, i] = AreLevelsRepeated(dampenedLevels);
+                safetyRecord[1, i] = IsLevelsOrderIncorrect(dampenedLevels);
+                safetyRecord[2, i] = IsLevelsDifferenceTooHigh(dampenedLevels);
+
+                if (!safetyRecord[0, i] && !safetyRecord[1, i] && !safetyRecord[2, i]) return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool AreLevelsRepeated(List<int> levels)

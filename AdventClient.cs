@@ -28,6 +28,6 @@ public class AdventClient
 
     private static string GetCookie()
     {
-        return $"session=53616c7465645f5fa0a6a05092e4eb5e115902dc57e7cfc11d56a6f7d756470203b4c4e9fb8defaf0fd1ad8bba5f6e73391b405f4033556ec9f8f0e5cae41750";
+        return $"session=COOKIE_HERE";
     }
 }
