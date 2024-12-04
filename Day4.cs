@@ -2,10 +2,10 @@ namespace Advent;
 
 public class Day4
 {
-    private static readonly char X = Char("X");
-    private static readonly char M = Char("M");
-    private static readonly char A = Char("A");
-    private static readonly char S = Char("S");
+    private static readonly char X = Convert.ToChar("X");
+    private static readonly char M = Convert.ToChar("M");
+    private static readonly char A = Convert.ToChar("A");
+    private static readonly char S = Convert.ToChar("S");
 
     public async static Task Solve()
     {
@@ -17,11 +17,6 @@ public class Day4
 
         Console.WriteLine(part1Result); // 2414
         Console.WriteLine(part2Result); // 1871
-    }
-
-    private static char Char(string letter)
-    {
-        return Convert.ToChar(letter);
     }
 
     private static int HorizontalOccurrences(List<string> lines)
