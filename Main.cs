@@ -7,6 +7,7 @@ internal class Program
     {
         // await Day1.Solve();
         // await Day2.Solve();
-        await Day3.Solve();
+        // await Day3.Solve();
+        await Day4.Solve();
     }
 }
