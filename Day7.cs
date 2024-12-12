@@ -8,42 +8,34 @@ public class Day7
 
     public static async Task Solve()
     {
-        string responseBody = @"1040: 2 1 8 13 65 5
-489775464841: 754 909 829 862 9 4
-190: 10 19
-3267: 81 40 27
-83: 17 5
-156: 15 6
-7290: 6 8 6 15 // 1 + + + 2 * * * 3 * + + 4 * * + 5 + * + 6 + * * 7 * + * 8 + + *
-161011: 16 10 13
-192: 17 8 14
-21037: 9 7 18 13
-292: 11 6 16 20"; //await AdventClient.GetDataForDay(7);
-        List<string> lines = responseBody.Split("\n").ToList(); //.SkipLast(1).ToList();
-        List<int> results = [];
+        string responseBody = await AdventClient.GetDataForDay(7);
+        List<string> lines = responseBody.Split("\n").SkipLast(1).ToList();
 
         foreach (var line in lines)
         {
-            if (IsCalibrationCorrect(GetExpectedResult(line), GetTestNumbers(line)))
+            var expectedResult = GetExpectedResult(line);
+            var testNumbers = GetTestNumbers(line);
+
+            if (IsCalibrationCorrect(expectedResult, testNumbers))
             {
-                totalResult += GetExpectedResult(line);
+                totalResult += expectedResult;
             }
         }
 
         Console.WriteLine(totalResult);
     }
 
-    private static int GetExpectedResult(string line)
+    private static long GetExpectedResult(string line)
     {
-        return Convert.ToInt32(line.Split(":")[0]);
+        return Convert.ToInt64(line.Split(":")[0]);
     }
 
-    private static List<int> GetTestNumbers(string line)
+    private static List<long> GetTestNumbers(string line)
     {
-        return line.Split(" ").Skip(1).Select((item) => Convert.ToInt32(item)).ToList();
+        return line.Split(" ").Skip(1).Select((item) => Convert.ToInt64(item)).ToList();
     }
 
-    private static List<string> GetAllPossibleEquations(List<int> testNumbers, int index)
+    private static List<string> GetAllPossibleEquations(List<long> testNumbers, int index)
     {
         List<string> equations = [];
 
@@ -86,11 +78,28 @@ public class Day7
         return operations;
     }
 
-    private static bool IsCalibrationCorrect(int expectedResult, List<int> testNumbers)
+    private static bool IsCalibrationCorrect(long expectedResult, List<long> testNumbers)
     {
-        List<char> testedScenarios = [];
         var possibleOperations = ExtractOperations(GetAllPossibleEquations(testNumbers, 0));
-        bool wasCorrectCombinationFound = false;
+
+        foreach (var possibleOperation in possibleOperations)
+        {
+            var testResult = testNumbers[0];
+            for (var i = 1; i < testNumbers.Count; i++)
+            {
+                if (possibleOperation[i - 1].ToString() == "+")
+                {
+                    testResult += testNumbers[i];
+                }
+                else
+                {
+                    testResult *= testNumbers[i];
+                }
+            }
+
+            if (testResult == expectedResult) return true;
+
+        }
 
         return false;
     }
