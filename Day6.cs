@@ -15,20 +15,53 @@ public class Day6
     private static int X = 0;
     private static int Y = 0;
     private static bool hasGuardLeft = false;
+    private static readonly HashSet<string> originalPath = [];
 
     public async static Task Solve()
     {
         string responseBody = await AdventClient.GetDataForDay(6);
         List<string> map = responseBody.Split("\n").SkipLast(1).ToList();
+        List<string> reusableMap = [.. map];
 
         GetInitialCoordinates(map);
 
+        /* PART 1 */
         while (!hasGuardLeft)
         {
-            MoveGuard(ref map);
+            MoveGuard(ref map, true);
         }
 
         Console.WriteLine(CalculateVisitedPositions(map));
+
+        /* PART 2 */
+        var possibleLoops = 0;
+
+        foreach (var ogPathCoords in originalPath.Skip(1))
+        {
+            var coords = ogPathCoords.Split("-");
+            List<string> tempMap = [.. reusableMap];
+            List<string> pathRecord = [];
+            PlaceObstacleAt(Convert.ToInt32(coords[0]), Convert.ToInt32(coords[1]), ref tempMap);
+
+            GetInitialCoordinates(tempMap);
+            hasGuardLeft = false;
+
+            while (!hasGuardLeft)
+            {
+                // doesnt work yet
+                if (IsGuardStuckInLoop(ref pathRecord))
+                {
+                    possibleLoops++;
+                    break;
+                }
+
+                pathRecord.Add($"{X}-{Y}-{currentDirection}");
+
+                MoveGuard(ref tempMap, false);
+            }
+
+        }
+        Console.WriteLine(possibleLoops);
     }
 
     private static void GetInitialCoordinates(List<string> map)
@@ -41,6 +74,7 @@ public class Day6
                 {
                     X = x;
                     Y = y;
+                    currentDirection = Direction.UP;
                 }
             }
         }
@@ -93,15 +127,19 @@ public class Day6
         }
     }
 
-    private static void MoveGuard(ref List<string> map)
+    private static void MoveGuard(ref List<string> map, bool isFirstPath)
     {
         CheckForObstacle(map);
         CheckIfGuardLeft(ref map);
 
+        MarkPositionAsVisited(ref map);
+        if (isFirstPath)
+        {
+            originalPath.Add($"{X}-{Y}");
+        }
+
         if (!hasGuardLeft)
         {
-            MarkPositionAsVisited(ref map);
-
             if (currentDirection == Direction.UP) Y--;
             if (currentDirection == Direction.RIGHT) X++;
             if (currentDirection == Direction.DOWN) Y++;
@@ -125,5 +163,19 @@ public class Day6
         }
 
         return accumulator;
+    }
+
+    private static void PlaceObstacleAt(int x, int y, ref List<string> map)
+    {
+        char[] updatedMapRow = map[y].ToCharArray();
+
+        updatedMapRow[x] = Convert.ToChar("#");
+
+        map[y] = new string(updatedMapRow);
+    }
+
+    private static bool IsGuardStuckInLoop(ref List<string> pathRecord)
+    {
+        return pathRecord.Contains($"{X}-{Y}-{currentDirection}");
     }
 }
