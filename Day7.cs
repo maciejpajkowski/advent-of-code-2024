@@ -48,7 +48,7 @@ public class Day7
 
         foreach (var subCombination in subCombinations)
         {
-            foreach (var op in new List<string> { "+", "*" })
+            foreach (var op in new List<string> { "+", "*", "|" })
             {
                 equations.Add(testNumbers[index] + op + subCombination);
             }
@@ -85,11 +85,16 @@ public class Day7
         foreach (var possibleOperation in possibleOperations)
         {
             var testResult = testNumbers[0];
+
             for (var i = 1; i < testNumbers.Count; i++)
             {
                 if (possibleOperation[i - 1].ToString() == "+")
                 {
                     testResult += testNumbers[i];
+                }
+                else if (possibleOperation[i - 1].ToString() == "|")
+                {
+                    testResult = Convert.ToInt64($"{testResult}{testNumbers[i]}");
                 }
                 else
                 {
