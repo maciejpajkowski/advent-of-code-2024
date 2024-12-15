@@ -48,7 +48,6 @@ public class Day6
 
             while (!hasGuardLeft)
             {
-                // doesnt work yet
                 if (IsGuardStuckInLoop(ref pathRecord))
                 {
                     possibleLoops++;
